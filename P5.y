@@ -45,7 +45,7 @@ line: '\n'
 	| exp_i '\n' { printf("\tResultado: %d\n\n", $1); }
 	| exp_f '\n' { printf("\tResultado: %.4g\n\n", $1); }
 	| exp_c '\n' { printf("\tResultado: %s\n\n", $1); }
-	| exp_Var '\n'
+	| exp_Var '\n' 
 	{
 		table* aux = $1;
 		if(aux != NULL)
@@ -87,6 +87,56 @@ line: '\n'
 		else
 			printf("\t\e[35mVariable no declarada\e[0m\n");
 	}
+	|VARIABLE '=' exp_Var ';'
+	{
+		char* temp = lexema_aux($1);
+		table* aux =  get_nodo(temp);
+		if(aux != NULL)
+		{
+			if(aux->tipo == 2)
+			{
+				if($3->tipo == 2)
+				{
+					aux->valor.s = $3->valor.s;
+					printf("\tResultado: %s\n", aux->valor.s);
+				}
+				else
+					printf("\t\e[35mTipos no compatibles\e[0m\n");
+			}
+			else if(aux->tipo == 0)
+			{
+				if($3->tipo == 0)
+				{
+					aux->valor.e = $3->valor.e;
+					printf("\tResultado: %d\n", aux->valor.e);
+				}
+				else if ($3->tipo == 1)
+				{
+					aux->valor.e = $3->valor.f;
+					printf("\tResultado: %d\n", aux->valor.e);
+				}
+				else
+					printf("\t\e[35mTipos no compatibles\e[0m\n");
+			}
+			else
+			{
+				if($3->tipo == 0)
+				{
+					aux->valor.f = $3->valor.e;
+					printf("\tResultado: %d\n", aux->valor.f);
+				}
+				else if ($3->tipo == 1)
+				{
+					aux->valor.f = $3->valor.f;
+					printf("\tResultado: %.5g\n", aux->valor.f);
+				}
+				else
+					printf("\t\e[35mTipos no compatibles\e[0m\n");
+			}
+		}
+		else
+			printf("\t\e[35mVariable no declarada\e[0m\n");
+	}
 	| INT VARIABLE ';'
 	{
 		char* temp = lexema_aux($2);
@@ -117,12 +167,14 @@ line: '\n'
 				aux->valor = val;
 				printf("\tResultado: %s = %d\n",temp,aux->valor.e);
 			}
-			else
+			else if (aux->tipo == 1)
 			{	
 				val.f = $3;
 				aux->valor = val;
 				printf("\tResultado: %s = %g\n",temp,aux->valor.f);
 			}
+			else
+				printf("\t\e[35mTipo de dato incompatible\e[0m\n");
 		}
 		else
 			printf("\t\e[35mVariable no declarada\e[0m\n");
@@ -168,10 +220,14 @@ line: '\n'
 				aux->valor.f = $3;
 				printf("\tResultado: %s = %f\n",temp,aux->valor.f);
 			}
-			else
-			{	
-				printf("\t\e[35mTipo de dato incompatible\e[0m\n");
+			else if (aux->tipo == 0)
+			{
+				val.e = $3;
+				aux->valor = val;
+				printf("\tResultado: %s = %d\n",temp,aux->valor.e);
 			}
+			else
+				printf("\t\e[35mTipo de dato incompatible\e[0m\n");
 		}
 		else
 			printf("\t\e[35mVariable no declarada\e[0m\n");
@@ -187,7 +243,7 @@ line: '\n'
 		if(add(temp,2,val) == false)
 			printf("\t\e[35mVariable previamente declarada\e[0m\n");
 		else
-			printf("\tResultado: %s\n",temp);
+			printf("\tResultado: \n");
 	}
 	| STRING VARIABLE '=' exp_c ';'
 	{
@@ -263,13 +319,6 @@ line: '\n'
 	| IF '(' exp_f '>' exp_f ')' ';' '\n' 
 	{ 
 		if($3 > $5)
-			printf("\tTRUE\n\n");
-		else
-			printf("\tFALSE\n\n");
-	}
-	| IF '(' exp_f '<' exp_f ')' ';' '\n' 
-	{ 
-		if($3 < $5)
 			printf("\tTRUE\n\n");
 		else
 			printf("\tFALSE\n\n");
@@ -773,6 +822,7 @@ exp_Var: VARIABLE
 		| POTENCIA '(' exp_Var ',' exp_c ')' ';'{ $$ = NULL; }
 ;
 
+
 %%
 
 int main()
@@ -789,3 +839,4 @@ int yywrap()
 {
 	return 1;
 }
+

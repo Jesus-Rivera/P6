@@ -12,7 +12,7 @@ typedef struct table
 	union Data valor;
 	struct table *siguiente;
 	struct table *anterior;
-}table; 
+}table;
 
 table *primero = NULL;
 table *ultimo = NULL;
@@ -24,13 +24,13 @@ table* get_nodo(char* lexema)
 {
 	int i;
 	table *aux = primero;
-	do
+	while(aux != NULL)	
 	{
 		if(comparation(aux->lexema,lexema))
 			return aux;
 		aux = aux->siguiente;
 		i++;
-	}while(aux != NULL);	
+	}
 	return aux;
 }
 

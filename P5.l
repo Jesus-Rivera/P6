@@ -64,68 +64,10 @@ Cadena \"([^"]*)\"
 	return (STRING);
 	}
 
-"+" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"-"  {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"^" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"*" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-">" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"<" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"/" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"=" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"(" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-")" {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-"," {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-";"  {
-	//printf("Simbolo: %s\n",&yytext[0]);
-	return(yytext[0]);
-	}
-
-
-
+"+"|"-"|"/"|"*"|"^"|"("|")"|"="|"<"|">"|","|";"		{
+							// printf("Signo: %s\n",yytext);
+							return (yytext[0]);
+				}
 
 {Variable}	{
 	//printf("Variable: %s\n",yytext);
